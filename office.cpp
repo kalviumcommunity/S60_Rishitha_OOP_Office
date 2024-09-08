@@ -19,7 +19,7 @@ public:
         this->noofStaff = staffCount;
         this->isPermanent = permanent;
     }
-
+    
     void OfficeDetailsDisplay() {
         cout << "Department Name: " << this->departmentName << endl;
         cout << "Number of Staff: " << this->noofStaff << endl;
@@ -59,6 +59,10 @@ public:
     OfficeHouse(){
     OfficeHousecount++;
     }
+    
+    static int getOfficeCount(){
+        return OfficeHousecount;
+    }
     void setOfficeHouseName(string name) {
         this->OfficeHouseName = name;
     }
@@ -85,12 +89,20 @@ public:
 };
 int OfficeHouse::OfficeHousecount = 0;
 int main() {
+    int Officecount;
+    
+    cout<<"Enter Office House Count: ";
+    cin>>Officecount;
+    cin.ignore();
+    
+    for(int j=0; j<Officecount; j++){
     OfficeHouse *OfficeHouse1 = new OfficeHouse();
     string name;
     int NumberOfOffices;
     int NumberOfStaff;
 
     cout << "Enter an Company name: ";
+    cin.ignore();
     getline(cin, name);
     OfficeHouse1->setOfficeHouseName(name);
 
@@ -118,7 +130,7 @@ int main() {
         OfficeHouse1->AddOffice(office);
     }
 
-    cout << "Enter Number of Staff: ";
+    cout << "Enter Number of Staff and their details: ";
     cin >> NumberOfStaff;
 
     for (int i = 0; i < NumberOfStaff; i++) {
@@ -131,6 +143,7 @@ int main() {
         cin.ignore();
         getline(cin, personName);
         cout << "Staff Position: ";
+        cin.ignore();
         getline(cin, pos);
         cout << "Staff Salary: ";
         cin >> s;
@@ -143,5 +156,7 @@ int main() {
     cout << endl;
     OfficeHouse1->GetOfficeHouseDetails();
     delete OfficeHouse1;
+    }
+    
     return 0;
 }
