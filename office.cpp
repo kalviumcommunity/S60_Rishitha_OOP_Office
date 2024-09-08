@@ -1,5 +1,10 @@
 #include <iostream>
+#include <cmath>
+#include <cstdio>
 #include <vector>
+#include <stdlib.h>
+#include <algorithm>
+#include <iomanip>
 using namespace std;
 
 class Office {
@@ -47,8 +52,13 @@ private:
     string OfficeHouseName;
     vector<Office*> Offices;
     vector<Staff*> StaffMembers;
+    static int OfficeHousecount;
+
 
 public:
+    OfficeHouse(){
+    OfficeHousecount++;
+    }
     void setOfficeHouseName(string name) {
         this->OfficeHouseName = name;
     }
@@ -73,7 +83,7 @@ public:
         }
     }
 };
-
+int OfficeHouse::OfficeHousecount = 0;
 int main() {
     OfficeHouse *OfficeHouse1 = new OfficeHouse();
     string name;
