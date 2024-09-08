@@ -45,46 +45,46 @@ public:
 class OfficeHouse {
 private:
     string OfficeHouseName;
-    vector<Office> Offices;
-    vector<Staff> StaffMembers;
+    vector<Office*> Offices;
+    vector<Staff*> StaffMembers;
 
 public:
     void setOfficeHouseName(string name) {
         this->OfficeHouseName = name;
     }
 
-    void AddOffice(Office office) {
+    void AddOffice(Office* office) {
         Offices.push_back(office);
     }
 
-    void AddStaff(Staff person) {
+    void AddStaff(Staff* person) {
         StaffMembers.push_back(person);
     }
 
     void GetOfficeHouseDetails() {
-        cout << "Office House Name: " << this->OfficeHouseName << endl;
-        cout << "Offices: " << endl;
+        cout << "Company Name: " << this->OfficeHouseName << endl;
+        cout << "Departments: " << endl;
         for (int i = 0; i < Offices.size(); i++) {
-            Offices[i].OfficeDetailsDisplay();
+            Offices[i]->OfficeDetailsDisplay();
         }
-        cout << "Staff Members: " << endl;
+        cout << "Staff Details: " << endl;
         for (int j = 0; j < StaffMembers.size(); j++) {
-            StaffMembers[j].StaffDetailsDisplay();
+            StaffMembers[j]->StaffDetailsDisplay();
         }
     }
 };
 
 int main() {
-    OfficeHouse OfficeHouse1;
+    OfficeHouse *OfficeHouse1 = new OfficeHouse();
     string name;
     int NumberOfOffices;
     int NumberOfStaff;
 
-    cout << "Enter an OfficeHouse name: ";
+    cout << "Enter an Company name: ";
     getline(cin, name);
-    OfficeHouse1.setOfficeHouseName(name);
+    OfficeHouse1->setOfficeHouseName(name);
 
-    cout << "Enter Number of Offices: ";
+    cout << "Enter Number of Departments: ";
     cin >> NumberOfOffices;
 
     for (int i = 0; i < NumberOfOffices; i++) {
@@ -93,7 +93,7 @@ int main() {
         bool permanent;
         int num;
 
-        cout << "Enter details of " << i + 1 << " office: " << endl;
+        cout << "Enter details of " << i + 1 << " Departments: " << endl;
         cout << "Department Name: ";
         cin.ignore();
         getline(cin, deptName);
@@ -103,9 +103,9 @@ int main() {
         cin >> num;
         permanent = (num == 1);
 
-        Office office;
-        office.AssignOfficeDetails(deptName, staffCount, permanent);
-        OfficeHouse1.AddOffice(office);
+        Office* office = new Office;
+        office->AssignOfficeDetails(deptName, staffCount, permanent);
+        OfficeHouse1->AddOffice(office);
     }
 
     cout << "Enter Number of Staff: ";
@@ -125,12 +125,13 @@ int main() {
         cout << "Staff Salary: ";
         cin >> s;
 
-        Staff person;
-        person.AssignStaffDetails(personName, pos, s);
-        OfficeHouse1.AddStaff(person);
+        Staff* person = new Staff;
+        person->AssignStaffDetails(personName, pos, s);
+        OfficeHouse1->AddStaff(person);
     }
 
     cout << endl;
-    OfficeHouse1.GetOfficeHouseDetails();
+    OfficeHouse1->GetOfficeHouseDetails();
+    delete OfficeHouse1;
     return 0;
 }
