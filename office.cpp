@@ -129,7 +129,6 @@ int main() {
         OfficeHouse* OfficeHouse1 = new OfficeHouse();
         string name;
         int NumberOfOffices;
-        int NumberOfStaff;
 
         cout << "Enter a Company name: ";
         getline(cin, name);
@@ -160,7 +159,8 @@ int main() {
             OfficeHouse1->AddOffice(office);
         }
 
-        cout << "Enter Number of Staff: ";
+        int NumberOfStaff;
+        cout << "Enter Total Number of Staff for the Office House: ";
         cin >> NumberOfStaff;
         cin.ignore();
 
