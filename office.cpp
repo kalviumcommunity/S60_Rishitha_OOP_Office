@@ -27,19 +27,19 @@ public:
         isPermanent = permanent;
     }
 
-    string getDepartmentName() {
+    string getDepartmentName() const {
         return departmentName;
     }
 
-    int getNoofStaff() {
+    int getNoofStaff() const {
         return noofStaff;
     }
 
-    bool getIsPermanent() {
+    bool getIsPermanent() const {
         return isPermanent;
     }
 
-    void OfficeDetailsDisplay() {
+    void OfficeDetailsDisplay() const {
         cout << "Department Name: " << getDepartmentName() << endl;
         cout << "Number of Staff: " << getNoofStaff() << endl;
         cout << "Is Permanent: " << (getIsPermanent() ? "Yes" : "No") << endl;
@@ -70,22 +70,46 @@ public:
         salary = s;
     }
 
-    string getName() {
+    string getName() const {
         return Name;
     }
 
-    string getPosition() {
+    string getPosition() const {
         return Position;
     }
 
-    double getSalary() {
+    double getSalary() const {
         return salary;
     }
 
-    void StaffDetailsDisplay() {
+    void StaffDetailsDisplay() const {
         cout << "Staff Name: " << getName() << endl;
         cout << "Position: " << getPosition() << endl;
         cout << "Salary: $" << getSalary() << endl;
+    }
+};
+
+class Manager : public Staff {
+private:
+    string officeLocation;
+
+public:
+    // Constructor that also takes office location
+    Manager(string n, string pos, double s, string location)
+        : Staff(n, pos, s), officeLocation(location) {}
+
+    void AssignManagerDetails(string n, string pos, double s, string location) {
+        AssignStaffDetails(n, pos, s);
+        officeLocation = location;
+    }
+
+    string getOfficeLocation() const {
+        return officeLocation;
+    }
+
+    void ManagerDetailsDisplay() const {
+        Staff::StaffDetailsDisplay();
+        cout << "Office Location: " << officeLocation << endl;
     }
 };
 
@@ -94,12 +118,12 @@ private:
     string OfficeHouseName;
     vector<Office*> Offices;
     vector<Staff*> StaffMembers;
-    static int OfficeHousecount;
+    static int OfficeHouseCount;
 
 public:
     // Constructor
     OfficeHouse(string name = "") : OfficeHouseName(name) {
-        OfficeHousecount++;
+        OfficeHouseCount++;
         cout << "OfficeHouse created: " << OfficeHouseName << endl;
     }
 
@@ -108,11 +132,11 @@ public:
         cout << "OfficeHouse destroyed: " << OfficeHouseName << endl;
         for (Office* office : Offices) delete office;
         for (Staff* staff : StaffMembers) delete staff;
-        OfficeHousecount--;
+        OfficeHouseCount--;
     }
 
     static int getOfficeHouseCount() {
-        return OfficeHousecount;
+        return OfficeHouseCount;
     }
 
     void setOfficeHouseName(string name) {
@@ -127,20 +151,20 @@ public:
         StaffMembers.push_back(person);
     }
 
-    void GetOfficeHouseDetails() {
+    void GetOfficeHouseDetails() const {
         cout << "Company Name: " << OfficeHouseName << endl;
         cout << "Departments: " << endl;
-        for (int i = 0; i < Offices.size(); i++) {
-            Offices[i]->OfficeDetailsDisplay();
+        for (const Office* office : Offices) {
+            office->OfficeDetailsDisplay();
         }
         cout << "Staff Details: " << endl;
-        for (int j = 0; j < StaffMembers.size(); j++) {
-            StaffMembers[j]->StaffDetailsDisplay();
+        for (const Staff* staff : StaffMembers) {
+            staff->StaffDetailsDisplay();
         }
     }
 };
 
-int OfficeHouse::OfficeHousecount = 0;
+int OfficeHouse::OfficeHouseCount = 0;
 
 int main() {
     int OfficeHouseCount;
@@ -152,6 +176,22 @@ int main() {
         OfficeHouse* OfficeHouse1 = new OfficeHouse();
         string name;
         int NumberOfOffices;
+        int NumberOfStaff;
+        string managerName;
+        double managerSalary;
+        string location;
+
+        cout << "Enter OfficeHouse manager name: ";
+        getline(cin, managerName);
+        cout << "Enter Manager Salary: ";
+        cin >> managerSalary;
+        cout << "Enter Location: ";
+        cin.ignore();
+        getline(cin, location);
+
+        Manager manager1(managerName, "Manager", managerSalary, location);
+        manager1.ManagerDetailsDisplay();
+        cout << endl;
 
         cout << "Enter a Company name: ";
         getline(cin, name);
@@ -181,7 +221,6 @@ int main() {
             OfficeHouse1->AddOffice(office);
         }
 
-        int NumberOfStaff;
         cout << "Enter Total Number of Staff for the Office House: ";
         cin >> NumberOfStaff;
         cin.ignore();
@@ -194,9 +233,9 @@ int main() {
             cout << "Enter details of " << i + 1 << " staff member: " << endl;
             cout << "Staff Name: ";
             getline(cin, personName);
-            cout << "Staff Position: ";
+            cout << "Position: ";
             getline(cin, pos);
-            cout << "Staff Salary: ";
+            cout << "Salary: $";
             cin >> s;
             cin.ignore();
 
@@ -209,9 +248,6 @@ int main() {
         delete OfficeHouse1;
     }
 
-    cout << "Total number of office houses added: " << OfficeHouse::getOfficeHouseCount() << endl;
-
+    cout << "Total number of Office Houses: " << OfficeHouse::getOfficeHouseCount() << endl;
     return 0;
 }
-
-
