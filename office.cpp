@@ -1,10 +1,5 @@
 #include <iostream>
-#include <cmath>
-#include <cstdio>
 #include <vector>
-#include <stdlib.h>
-#include <algorithm>
-#include <iomanip>
 #include <string>
 using namespace std;
 
@@ -15,7 +10,16 @@ private:
     bool isPermanent;
 
 public:
-    Office() {}
+    // Constructor
+    Office(string deptName = "", int staffCount = 0, bool permanent = false)
+        : departmentName(deptName), noofStaff(staffCount), isPermanent(permanent) {
+        cout << "Office created: " << departmentName << endl;
+    }
+
+    // Destructor
+    ~Office() {
+        cout << "Office destroyed: " << departmentName << endl;
+    }
 
     void AssignOfficeDetails(string deptName, int staffCount, bool permanent) {
         departmentName = deptName;
@@ -49,7 +53,16 @@ private:
     double salary;
 
 public:
-    Staff() {}
+    // Constructor
+    Staff(string n = "", string pos = "", double s = 0.0)
+        : Name(n), Position(pos), salary(s) {
+        cout << "Staff created: " << Name << endl;
+    }
+
+    // Destructor
+    ~Staff() {
+        cout << "Staff destroyed: " << Name << endl;
+    }
 
     void AssignStaffDetails(string n, string pos, double s) {
         Name = n;
@@ -84,8 +97,18 @@ private:
     static int OfficeHousecount;
 
 public:
-    OfficeHouse() {
+    // Constructor
+    OfficeHouse(string name = "") : OfficeHouseName(name) {
         OfficeHousecount++;
+        cout << "OfficeHouse created: " << OfficeHouseName << endl;
+    }
+
+    // Destructor
+    ~OfficeHouse() {
+        cout << "OfficeHouse destroyed: " << OfficeHouseName << endl;
+        for (Office* office : Offices) delete office;
+        for (Staff* staff : StaffMembers) delete staff;
+        OfficeHousecount--;
     }
 
     static int getOfficeHouseCount() {
@@ -154,8 +177,7 @@ int main() {
             permanent = (num == 1);
             cin.ignore();
 
-            Office* office = new Office();
-            office->AssignOfficeDetails(deptName, staffCount, permanent);
+            Office* office = new Office(deptName, staffCount, permanent);
             OfficeHouse1->AddOffice(office);
         }
 
@@ -178,8 +200,7 @@ int main() {
             cin >> s;
             cin.ignore();
 
-            Staff* person = new Staff();
-            person->AssignStaffDetails(personName, pos, s);
+            Staff* person = new Staff(personName, pos, s);
             OfficeHouse1->AddStaff(person);
         }
 
@@ -188,7 +209,9 @@ int main() {
         delete OfficeHouse1;
     }
 
-    cout << "Total number of offices added: " << OfficeHouse::getOfficeHouseCount() << endl;
+    cout << "Total number of office houses added: " << OfficeHouse::getOfficeHouseCount() << endl;
 
     return 0;
 }
+
+
