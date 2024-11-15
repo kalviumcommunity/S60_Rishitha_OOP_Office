@@ -121,7 +121,7 @@ public:
     Manager(string n, string pos, double s, string location)
         : Staff(n, pos, s), officeLocation(location) {}
 
-    void ManagerDetailsDisplay() const override {
+    void StaffDetailsDisplay() const override {
         Staff::StaffDetailsDisplay();
         cout << "Office Location: " << officeLocation << endl;
     }
@@ -136,11 +136,13 @@ private:
     static int OfficeHouseCount;
 
 public:
+    // Constructor
     OfficeHouse(string name = "") : OfficeHouseName(name) {
         OfficeHouseCount++;
         cout << "OfficeHouse created: " << OfficeHouseName << endl;
     }
 
+    // Destructor
     ~OfficeHouse() {
         cout << "OfficeHouse destroyed: " << OfficeHouseName << endl;
         for (Office* office : Offices) delete office;
@@ -223,7 +225,6 @@ int main() {
             OfficeHouse1->AddOffice(techOffice);
         }
 
-        cout << endl;
         OfficeHouse1->GetOfficeHouseDetails();
         delete OfficeHouse1;
     }
