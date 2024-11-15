@@ -3,6 +3,7 @@
 #include <string>
 using namespace std;
 
+// Base Class: Office
 class Office {
 private:
     string departmentName;
@@ -17,11 +18,11 @@ public:
     }
 
     // Destructor
-    ~Office() {
+    virtual ~Office() {
         cout << "Office destroyed: " << departmentName << endl;
     }
 
-    void AssignOfficeDetails(string deptName, int staffCount, bool permanent) {
+    virtual void AssignOfficeDetails(string deptName, int staffCount, bool permanent) {
         departmentName = deptName;
         noofStaff = staffCount;
         isPermanent = permanent;
@@ -39,13 +40,35 @@ public:
         return isPermanent;
     }
 
-    void OfficeDetailsDisplay() const {
+    // Virtual method for polymorphism
+    virtual void OfficeDetailsDisplay() const {
         cout << "Department Name: " << getDepartmentName() << endl;
         cout << "Number of Staff: " << getNoofStaff() << endl;
         cout << "Is Permanent: " << (getIsPermanent() ? "Yes" : "No") << endl;
     }
 };
 
+// Derived Class: TechOffice
+class TechOffice : public Office {
+private:
+    string techFocusArea;
+
+public:
+    TechOffice(string deptName, int staffCount, bool permanent, string techArea)
+        : Office(deptName, staffCount, permanent), techFocusArea(techArea) {}
+
+    void AssignTechOfficeDetails(string deptName, int staffCount, bool permanent, string techArea) {
+        AssignOfficeDetails(deptName, staffCount, permanent);
+        techFocusArea = techArea;
+    }
+
+    void OfficeDetailsDisplay() const override {
+        Office::OfficeDetailsDisplay();
+        cout << "Tech Focus Area: " << techFocusArea << endl;
+    }
+};
+
+// Staff Class
 class Staff {
 private:
     string Name;
@@ -82,37 +105,29 @@ public:
         return salary;
     }
 
-    void StaffDetailsDisplay() const {
+    virtual void StaffDetailsDisplay() const {
         cout << "Staff Name: " << getName() << endl;
         cout << "Position: " << getPosition() << endl;
         cout << "Salary: $" << getSalary() << endl;
     }
 };
 
+// Derived Class: Manager
 class Manager : public Staff {
 private:
     string officeLocation;
 
 public:
-    // Constructor that also takes office location
     Manager(string n, string pos, double s, string location)
         : Staff(n, pos, s), officeLocation(location) {}
 
-    void AssignManagerDetails(string n, string pos, double s, string location) {
-        AssignStaffDetails(n, pos, s);
-        officeLocation = location;
-    }
-
-    string getOfficeLocation() const {
-        return officeLocation;
-    }
-
-    void ManagerDetailsDisplay() const {
+    void ManagerDetailsDisplay() const override {
         Staff::StaffDetailsDisplay();
         cout << "Office Location: " << officeLocation << endl;
     }
 };
 
+// OfficeHouse Class
 class OfficeHouse {
 private:
     string OfficeHouseName;
@@ -121,13 +136,11 @@ private:
     static int OfficeHouseCount;
 
 public:
-    // Constructor
     OfficeHouse(string name = "") : OfficeHouseName(name) {
         OfficeHouseCount++;
         cout << "OfficeHouse created: " << OfficeHouseName << endl;
     }
 
-    // Destructor
     ~OfficeHouse() {
         cout << "OfficeHouse destroyed: " << OfficeHouseName << endl;
         for (Office* office : Offices) delete office;
@@ -166,6 +179,7 @@ public:
 
 int OfficeHouse::OfficeHouseCount = 0;
 
+// Main Function
 int main() {
     int OfficeHouseCount;
     cout << "Enter number of office houses you want to create: ";
@@ -176,22 +190,6 @@ int main() {
         OfficeHouse* OfficeHouse1 = new OfficeHouse();
         string name;
         int NumberOfOffices;
-        int NumberOfStaff;
-        string managerName;
-        double managerSalary;
-        string location;
-
-        cout << "Enter OfficeHouse manager name: ";
-        getline(cin, managerName);
-        cout << "Enter Manager Salary: ";
-        cin >> managerSalary;
-        cout << "Enter Location: ";
-        cin.ignore();
-        getline(cin, location);
-
-        Manager manager1(managerName, "Manager", managerSalary, location);
-        manager1.ManagerDetailsDisplay();
-        cout << endl;
 
         cout << "Enter a Company name: ";
         getline(cin, name);
@@ -205,42 +203,24 @@ int main() {
             string deptName;
             int staffCount;
             bool permanent;
+            string techArea;
             int num;
 
-            cout << "Enter details of " << i + 1 << " Department: " << endl;
+            cout << "Enter details of Department " << i + 1 << ":" << endl;
             cout << "Department Name: ";
             getline(cin, deptName);
             cout << "Number of Staff: ";
             cin >> staffCount;
-            cout << "Is the office permanent? (1 for Yes, 0 for No): ";
+            cout << "Is Permanent? (1 for Yes, 0 for No): ";
             cin >> num;
             permanent = (num == 1);
             cin.ignore();
 
-            Office* office = new Office(deptName, staffCount, permanent);
-            OfficeHouse1->AddOffice(office);
-        }
+            cout << "Tech Focus Area: ";
+            getline(cin, techArea);
 
-        cout << "Enter Total Number of Staff for the Office House: ";
-        cin >> NumberOfStaff;
-        cin.ignore();
-
-        for (int i = 0; i < NumberOfStaff; i++) {
-            string personName;
-            string pos;
-            double s;
-
-            cout << "Enter details of " << i + 1 << " staff member: " << endl;
-            cout << "Staff Name: ";
-            getline(cin, personName);
-            cout << "Position: ";
-            getline(cin, pos);
-            cout << "Salary: $";
-            cin >> s;
-            cin.ignore();
-
-            Staff* person = new Staff(personName, pos, s);
-            OfficeHouse1->AddStaff(person);
+            Office* techOffice = new TechOffice(deptName, staffCount, permanent, techArea);
+            OfficeHouse1->AddOffice(techOffice);
         }
 
         cout << endl;
@@ -248,6 +228,5 @@ int main() {
         delete OfficeHouse1;
     }
 
-    cout << "Total number of Office Houses: " << OfficeHouse::getOfficeHouseCount() << endl;
     return 0;
 }
