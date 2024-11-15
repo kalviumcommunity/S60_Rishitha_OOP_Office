@@ -3,6 +3,17 @@
 #include <string>
 using namespace std;
 
+// Separate Class for Office Details
+class OfficeDetailsManager {
+public:
+    static void AssignOfficeDetails(string& deptName, int& staffCount, bool& permanent,
+                                    const string& newDeptName, int newStaffCount, bool newPermanent) {
+        deptName = newDeptName;
+        staffCount = newStaffCount;
+        permanent = newPermanent;
+    }
+};
+
 // Base Class: Office
 class Office {
 private:
@@ -22,23 +33,14 @@ public:
         cout << "Office destroyed: " << departmentName << endl;
     }
 
-    virtual void AssignOfficeDetails(string deptName, int staffCount, bool permanent) {
-        departmentName = deptName;
-        noofStaff = staffCount;
-        isPermanent = permanent;
+    void AssignDetails(string deptName, int staffCount, bool permanent) {
+        OfficeDetailsManager::AssignOfficeDetails(departmentName, noofStaff, isPermanent,
+                                                  deptName, staffCount, permanent);
     }
 
-    string getDepartmentName() const {
-        return departmentName;
-    }
-
-    int getNoofStaff() const {
-        return noofStaff;
-    }
-
-    bool getIsPermanent() const {
-        return isPermanent;
-    }
+    string getDepartmentName() const { return departmentName; }
+    int getNoofStaff() const { return noofStaff; }
+    bool getIsPermanent() const { return isPermanent; }
 
     // Virtual method for polymorphism
     virtual void OfficeDetailsDisplay() const {
@@ -57,14 +59,25 @@ public:
     TechOffice(string deptName, int staffCount, bool permanent, string techArea)
         : Office(deptName, staffCount, permanent), techFocusArea(techArea) {}
 
-    void AssignTechOfficeDetails(string deptName, int staffCount, bool permanent, string techArea) {
-        AssignOfficeDetails(deptName, staffCount, permanent);
+    void AssignDetails(string deptName, int staffCount, bool permanent, string techArea) {
+        Office::AssignDetails(deptName, staffCount, permanent);
         techFocusArea = techArea;
     }
 
     void OfficeDetailsDisplay() const override {
         Office::OfficeDetailsDisplay();
         cout << "Tech Focus Area: " << techFocusArea << endl;
+    }
+};
+
+// Separate Class for Staff Details
+class StaffDetailsManager {
+public:
+    static void AssignStaffDetails(string& name, string& position, double& salary,
+                                   const string& newName, const string& newPosition, double newSalary) {
+        name = newName;
+        position = newPosition;
+        salary = newSalary;
     }
 };
 
@@ -77,33 +90,20 @@ private:
 
 public:
     // Constructor
-    Staff(string n = "", string pos = "", double s = 0.0)
-        : Name(n), Position(pos), salary(s) {
+    Staff(string n = "", string pos = "", double s = 0.0) : Name(n), Position(pos), salary(s) {
         cout << "Staff created: " << Name << endl;
     }
 
     // Destructor
-    ~Staff() {
-        cout << "Staff destroyed: " << Name << endl;
+    virtual ~Staff() { cout << "Staff destroyed: " << Name << endl; }
+
+    void AssignDetails(string n, string pos, double s) {
+        StaffDetailsManager::AssignStaffDetails(Name, Position, salary, n, pos, s);
     }
 
-    void AssignStaffDetails(string n, string pos, double s) {
-        Name = n;
-        Position = pos;
-        salary = s;
-    }
-
-    string getName() const {
-        return Name;
-    }
-
-    string getPosition() const {
-        return Position;
-    }
-
-    double getSalary() const {
-        return salary;
-    }
+    string getName() const { return Name; }
+    string getPosition() const { return Position; }
+    double getSalary() const { return salary; }
 
     virtual void StaffDetailsDisplay() const {
         cout << "Staff Name: " << getName() << endl;
@@ -150,32 +150,19 @@ public:
         OfficeHouseCount--;
     }
 
-    static int getOfficeHouseCount() {
-        return OfficeHouseCount;
-    }
+    static int getOfficeHouseCount() { return OfficeHouseCount; }
 
-    void setOfficeHouseName(string name) {
-        OfficeHouseName = name;
-    }
+    void setOfficeHouseName(string name) { OfficeHouseName = name; }
 
-    void AddOffice(Office* office) {
-        Offices.push_back(office);
-    }
-
-    void AddStaff(Staff* person) {
-        StaffMembers.push_back(person);
-    }
+    void AddOffice(Office* office) { Offices.push_back(office); }
+    void AddStaff(Staff* person) { StaffMembers.push_back(person); }
 
     void GetOfficeHouseDetails() const {
         cout << "Company Name: " << OfficeHouseName << endl;
         cout << "Departments: " << endl;
-        for (const Office* office : Offices) {
-            office->OfficeDetailsDisplay();
-        }
+        for (const Office* office : Offices) office->OfficeDetailsDisplay();
         cout << "Staff Details: " << endl;
-        for (const Staff* staff : StaffMembers) {
-            staff->StaffDetailsDisplay();
-        }
+        for (const Staff* staff : StaffMembers) staff->StaffDetailsDisplay();
     }
 };
 
