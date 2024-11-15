@@ -14,7 +14,7 @@ public:
     }
 };
 
-// Base Class: Office
+// Abstract Base Class: Office
 class Office {
 private:
     string departmentName;
@@ -42,12 +42,8 @@ public:
     int getNoofStaff() const { return noofStaff; }
     bool getIsPermanent() const { return isPermanent; }
 
-    // Virtual method for polymorphism
-    virtual void OfficeDetailsDisplay() const {
-        cout << "Department Name: " << getDepartmentName() << endl;
-        cout << "Number of Staff: " << getNoofStaff() << endl;
-        cout << "Is Permanent: " << (getIsPermanent() ? "Yes" : "No") << endl;
-    }
+    // Pure virtual function for polymorphism
+    virtual void OfficeDetailsDisplay() const = 0;
 };
 
 // Derived Class: TechOffice
@@ -65,7 +61,9 @@ public:
     }
 
     void OfficeDetailsDisplay() const override {
-        Office::OfficeDetailsDisplay();
+        cout << "Department Name: " << getDepartmentName() << endl;
+        cout << "Number of Staff: " << getNoofStaff() << endl;
+        cout << "Is Permanent: " << (getIsPermanent() ? "Yes" : "No") << endl;
         cout << "Tech Focus Area: " << techFocusArea << endl;
     }
 };
@@ -81,7 +79,7 @@ public:
     }
 };
 
-// Staff Class
+// Abstract Base Class: Staff
 class Staff {
 private:
     string Name;
@@ -105,11 +103,8 @@ public:
     string getPosition() const { return Position; }
     double getSalary() const { return salary; }
 
-    virtual void StaffDetailsDisplay() const {
-        cout << "Staff Name: " << getName() << endl;
-        cout << "Position: " << getPosition() << endl;
-        cout << "Salary: $" << getSalary() << endl;
-    }
+    // Pure virtual function for polymorphism
+    virtual void StaffDetailsDisplay() const = 0;
 };
 
 // Derived Class: Manager
@@ -122,7 +117,9 @@ public:
         : Staff(n, pos, s), officeLocation(location) {}
 
     void StaffDetailsDisplay() const override {
-        Staff::StaffDetailsDisplay();
+        cout << "Staff Name: " << getName() << endl;
+        cout << "Position: " << getPosition() << endl;
+        cout << "Salary: $" << getSalary() << endl;
         cout << "Office Location: " << officeLocation << endl;
     }
 };
@@ -133,12 +130,10 @@ private:
     string OfficeHouseName;
     vector<Office*> Offices;
     vector<Staff*> StaffMembers;
-    static int OfficeHouseCount;
 
 public:
     // Constructor
     OfficeHouse(string name = "") : OfficeHouseName(name) {
-        OfficeHouseCount++;
         cout << "OfficeHouse created: " << OfficeHouseName << endl;
     }
 
@@ -147,10 +142,7 @@ public:
         cout << "OfficeHouse destroyed: " << OfficeHouseName << endl;
         for (Office* office : Offices) delete office;
         for (Staff* staff : StaffMembers) delete staff;
-        OfficeHouseCount--;
     }
-
-    static int getOfficeHouseCount() { return OfficeHouseCount; }
 
     void setOfficeHouseName(string name) { OfficeHouseName = name; }
 
@@ -166,8 +158,6 @@ public:
     }
 };
 
-int OfficeHouse::OfficeHouseCount = 0;
-
 // Main Function
 int main() {
     int OfficeHouseCount;
@@ -178,7 +168,7 @@ int main() {
     for (int j = 0; j < OfficeHouseCount; j++) {
         OfficeHouse* OfficeHouse1 = new OfficeHouse();
         string name;
-        int NumberOfOffices;
+        int NumberOfOffices, numberOfStaff;
 
         cout << "Enter a Company name: ";
         getline(cin, name);
@@ -210,6 +200,28 @@ int main() {
 
             Office* techOffice = new TechOffice(deptName, staffCount, permanent, techArea);
             OfficeHouse1->AddOffice(techOffice);
+        }
+
+        cout << "Enter Number of Staff Members: ";
+        cin >> numberOfStaff;
+        cin.ignore();
+
+        for (int i = 0; i < numberOfStaff; i++) {
+            string name, position, location;
+            double salary;
+            cout << "Enter details for Staff member " << i + 1 << ": " << endl;
+            cout << "Name: ";
+            getline(cin, name);
+            cout << "Position: ";
+            getline(cin, position);
+            cout << "Salary: ";
+            cin >> salary;
+            cin.ignore();
+            cout << "Office Location: ";
+            getline(cin, location);
+
+            Staff* staff = new Manager(name, position, salary, location);
+            OfficeHouse1->AddStaff(staff);
         }
 
         OfficeHouse1->GetOfficeHouseDetails();
